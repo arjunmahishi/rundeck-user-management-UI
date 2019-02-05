@@ -30,17 +30,19 @@ func (pf *propsFile) GetUsers() ([]user, error) {
 	if err != nil {
 		return nil, err
 	}
-	return parseProps(conts)
+	return parseProps(conts), nil
 }
 
 func (pf *propsFile) UpdateUsers(users []user) error {
 	return nil
 }
 
-func parseProps(conts []byte) ([]user, error) {
+func parseProps(conts []byte) []user {
+	conts = bytes.TrimSpace(conts)
 	records := bytes.Split(conts, []byte("\n"))
 	users := []user{}
 	for _, record := range records {
+		record = bytes.TrimSpace(record)
 		if !bytes.HasPrefix(record, []byte("#")) {
 			var u user
 			columns := bytes.Split(record, []byte(":"))
@@ -53,5 +55,5 @@ func parseProps(conts []byte) ([]user, error) {
 			users = append(users, u)
 		}
 	}
-	return users, nil
+	return users
 }
