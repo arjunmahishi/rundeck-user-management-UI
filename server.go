@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/labstack/echo/middleware"
@@ -32,8 +34,22 @@ func getUsers(c echo.Context) error {
 }
 
 func updateUsers(c echo.Context) error {
-	var users []user
-	err := um.UpdateUsers(users)
+	body := c.Request().Body
+	defer body.Close()
+
+	raw, err := ioutil.ReadAll(body)
+	if err != nil {
+		return err
+	}
+
+	var bodyJSON struct {
+		OldUsername string
+		NewUsername string
+		Roles       []string
+	}
+	json.Unmarshal(raw, &bodyJSON)
+
+	err = um.UpdateUser(bodyJSON.OldUsername, bodyJSON.NewUsername, bodyJSON.Roles)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}

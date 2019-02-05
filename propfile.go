@@ -2,18 +2,20 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 )
 
 type user struct {
-	username string
-	roles    []string
+	Username string   `json:"username"`
+	Roles    []string `json:"roles"`
+	Password string
 }
 
 // UserManager interface to handle user related tasks
 type UserManager interface {
 	GetUsers() ([]user, error)
-	UpdateUsers(users []user) error
+	UpdateUser(oldUsername, newUsername string, newRoles []string) error
 }
 
 // NewUserManager is a constructor for UserManager
@@ -33,7 +35,19 @@ func (pf *propsFile) GetUsers() ([]user, error) {
 	return parseProps(conts), nil
 }
 
-func (pf *propsFile) UpdateUsers(users []user) error {
+func (pf *propsFile) UpdateUser(oldUsername, newUsername string, newRoles []string) error {
+	users, err := pf.GetUsers()
+	if err != nil {
+		return err
+	}
+
+	var currUser user
+	for _, currUser = range users {
+		if currUser.Username == oldUsername {
+			break
+		}
+	}
+	fmt.Println(currUser)
 	return nil
 }
 
@@ -43,15 +57,15 @@ func parseProps(conts []byte) []user {
 	users := []user{}
 	for _, record := range records {
 		record = bytes.TrimSpace(record)
-		if !bytes.HasPrefix(record, []byte("#")) {
+		if !bytes.HasPrefix(record, []byte("#")) && !bytes.Equal(record, []byte("")) {
 			var u user
 			columns := bytes.Split(record, []byte(":"))
 			roles := []string{}
 			for _, role := range bytes.Split(columns[1], []byte(","))[1:] {
 				roles = append(roles, string(role))
 			}
-			u.username = string(columns[0])
-			u.roles = roles
+			u.Username = string(columns[0])
+			u.Roles = roles
 			users = append(users, u)
 		}
 	}
