@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/http"
-	"os"
 
 	"github.com/labstack/echo/middleware"
 
 	"github.com/labstack/echo"
 )
+
+var um = NewUserManager()
 
 func main() {
 	e := echo.New()
@@ -24,16 +24,16 @@ func main() {
 }
 
 func getUsers(c echo.Context) error {
-	conts, err := ioutil.ReadFile("/etc/rundeck/rundeck-config.properties")
+	users, err := um.GetUsers()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
-	return c.String(http.StatusOK, string(conts))
+	return c.JSON(http.StatusOK, users)
 }
 
 func updateUsers(c echo.Context) error {
-	propFile, err := os.Open("/etc/rundeck/rundeck-config.properties")
-	defer propFile.Close()
+	var users []user
+	err := um.UpdateUsers(users)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
