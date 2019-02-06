@@ -35,6 +35,20 @@ func getUsers(c echo.Context) error {
 }
 
 func createUser(c echo.Context) error {
+	body := c.Request().Body
+	defer body.Close()
+
+	raw, err := ioutil.ReadAll(body)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	var newUser user
+	json.Unmarshal(raw, &newUser)
+	err = um.CreateUser(newUser)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
 	return c.String(http.StatusOK, "OK")
 }
 

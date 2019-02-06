@@ -16,7 +16,9 @@ type user struct {
 // UserManager interface to handle user related tasks
 type UserManager interface {
 	GetUsers() ([]user, error)
+	CreateUser(newUser user) error
 	UpdateUser(oldUsername string, newUser user) error
+	DeleteUser(username string) error
 }
 
 // NewUserManager is a constructor for UserManager
@@ -34,6 +36,38 @@ func (pf *propsFile) GetUsers() ([]user, error) {
 		return nil, err
 	}
 	return parseProps(conts), nil
+}
+
+func (pf *propsFile) CreateUser(newUser user) error {
+	newRoleString := ""
+	for _, r := range newUser.Roles {
+		newRoleString += r + ","
+	}
+	newRoleString = strings.Trim(newRoleString, ",")
+	newUserString := fmt.Sprintf("%s:%s,%s", newUser.Username, newUser.Password, newRoleString)
+
+	conts, err := ioutil.ReadFile(pf.path)
+	if err != nil {
+		return err
+	}
+
+	for _, line := range bytes.Split(conts, []byte("\n")) {
+		line = bytes.TrimSpace(line)
+		if bytes.HasPrefix(line, []byte(newUser.Username)) {
+			return fmt.Errorf("User already exists")
+		}
+	}
+
+	conts = bytes.Join([][]byte{
+		conts,
+		[]byte(newUserString),
+	}, []byte("\n"))
+
+	err = ioutil.WriteFile(pf.path, conts, 0)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (pf *propsFile) UpdateUser(oldUsername string, newUser user) error {
