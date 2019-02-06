@@ -34,15 +34,52 @@
                 <tbody>
                     <tr>
                         <td></td><td></td><td></td>
-                        <td><button class="btn btn-outline-success">Add</button></td>
+                        <td><button class="btn btn-outline-success" 
+                            data-toggle="modal" data-target="#user-data">Add</button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </body>
+
+    <!-- Modal -->
+    <div class="modal fade" id="user-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">User details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-form-label">Username:</label>
+                <input type="text" class="form-control" id="modal-username">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Role (comma separated):</label>
+                <input type="text" class="form-control" id="modal-roles">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Password:</label>
+                <input type="password" class="form-control" id="modal-password">
+                <input type="checkbox" oninput="togglePassword(this.checked)"/> Show password
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-dark">Submit</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
 </html>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <script src="main.js"></script>
+
+

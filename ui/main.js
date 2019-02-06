@@ -1,3 +1,7 @@
+window.onload = () => {
+    getUsers(users => loadUserTable(users))
+}
+
 const baseURL = "http://localhost:3000/users"
 const table = document.querySelector("#user-table")
 var usersList;
@@ -37,7 +41,8 @@ const loadUserTable = (users) => {
                 <td class="">${user.username}</td>
                 <td class="">${roles}</td>
                 <td>
-                    <button class="btn btn-outline-secondary">Edit</button>
+                    <button class="btn btn-outline-secondary" data-user="${i}"
+                    data-toggle="modal" data-target="#user-data">Edit</button>
                     <button class="btn btn-outline-danger">Delete</button>
                 </td>
             </tr>
@@ -46,9 +51,29 @@ const loadUserTable = (users) => {
 }
 
 const searchHandler = (query) => {
-    loadUserTable(usersList.filter(user => user.username.includes(query)))
+    loadUserTable(usersList.filter(user => user.username.includes(query.toLowerCase())))
 }
 
-window.onload = () => {
-    getUsers(users => loadUserTable(users))
+const togglePassword = (checked) => {
+    if (checked) {
+        document.querySelector("#modal-password").type = "text"
+    }else {
+        document.querySelector("#modal-password").type = "password"
+    }
 }
+
+$('#user-data').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var i = button.data('user')
+
+    if (i !== undefined) {
+        var user = usersList[i]
+        document.querySelector("#modal-username").value = user.username
+        document.querySelector("#modal-roles").value = user.roles
+        document.querySelector("#modal-password").value = user.password
+    }else {
+        document.querySelector("#modal-username").value = ""
+        document.querySelector("#modal-roles").value = "" 
+        document.querySelector("#modal-password").value = ""
+    }
+})
