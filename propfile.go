@@ -41,7 +41,7 @@ func (pf *propsFile) GetUsers() ([]user, error) {
 func (pf *propsFile) CreateUser(newUser user) error {
 	newRoleString := ""
 	for _, r := range newUser.Roles {
-		newRoleString += r + ","
+		newRoleString += strings.TrimSpace(r) + ","
 	}
 	newRoleString = strings.Trim(newRoleString, ",")
 	newUserString := fmt.Sprintf("%s:%s,%s", newUser.Username, newUser.Password, newRoleString)
@@ -73,7 +73,7 @@ func (pf *propsFile) CreateUser(newUser user) error {
 func (pf *propsFile) UpdateUser(oldUsername string, newUser user) error {
 	newRoleString := ""
 	for _, r := range newUser.Roles {
-		newRoleString += r + ","
+		newRoleString += strings.TrimSpace(r) + ","
 	}
 	newRoleString = strings.Trim(newRoleString, ",")
 	newUserString := fmt.Sprintf("%s:%s,%s", newUser.Username, newUser.Password, newRoleString)
