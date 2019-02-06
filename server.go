@@ -20,6 +20,7 @@ func main() {
 	e.Static("/", "ui")
 
 	e.GET("/users", getUsers)
+	e.POST("/users", createUser)
 	e.PUT("/users", updateUsers)
 
 	e.Logger.Fatal(e.Start(":3000"))
@@ -31,6 +32,10 @@ func getUsers(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 	return c.JSON(http.StatusOK, users)
+}
+
+func createUser(c echo.Context) error {
+	return c.String(http.StatusOK, "OK")
 }
 
 func updateUsers(c echo.Context) error {
