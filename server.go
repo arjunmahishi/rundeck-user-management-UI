@@ -22,6 +22,7 @@ func main() {
 	e.GET("/users", getUsers)
 	e.POST("/users", createUser)
 	e.PUT("/users", updateUsers)
+	e.DELETE("/users", deleteUser)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
@@ -68,6 +69,27 @@ func updateUsers(c echo.Context) error {
 	json.Unmarshal(raw, &bodyJSON)
 
 	err = um.UpdateUser(bodyJSON.OldUsername, bodyJSON.NewUser)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return c.String(http.StatusOK, "OK")
+}
+
+func deleteUser(c echo.Context) error {
+	body := c.Request().Body
+	defer body.Close()
+
+	raw, err := ioutil.ReadAll(body)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	var bodyJSON struct {
+		Username string
+	}
+	json.Unmarshal(raw, &bodyJSON)
+
+	err = um.DeleteUser(bodyJSON.Username)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}

@@ -98,6 +98,27 @@ func (pf *propsFile) UpdateUser(oldUsername string, newUser user) error {
 	return nil
 }
 
+func (pf *propsFile) DeleteUser(username string) error {
+	conts, err := ioutil.ReadFile(pf.path)
+	if err != nil {
+		return err
+	}
+
+	for _, line := range bytes.Split(conts, []byte("\n")) {
+		line = bytes.TrimSpace(line)
+		if bytes.HasPrefix(line, []byte(username)) {
+			conts = bytes.Replace(conts, line, []byte(""), -1)
+			break
+		}
+	}
+
+	err = ioutil.WriteFile(pf.path, conts, 0)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func parseProps(conts []byte) []user {
 	conts = bytes.TrimSpace(conts)
 	records := bytes.Split(conts, []byte("\n"))
