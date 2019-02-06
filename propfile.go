@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
 
 type user struct {
@@ -15,7 +16,7 @@ type user struct {
 // UserManager interface to handle user related tasks
 type UserManager interface {
 	GetUsers() ([]user, error)
-	UpdateUser(oldUsername, newUsername string, newRoles []string) error
+	UpdateUser(oldUsername string, newUser user) error
 }
 
 // NewUserManager is a constructor for UserManager
@@ -35,19 +36,31 @@ func (pf *propsFile) GetUsers() ([]user, error) {
 	return parseProps(conts), nil
 }
 
-func (pf *propsFile) UpdateUser(oldUsername, newUsername string, newRoles []string) error {
-	users, err := pf.GetUsers()
+func (pf *propsFile) UpdateUser(oldUsername string, newUser user) error {
+	newRoleString := ""
+	for _, r := range newUser.Roles {
+		newRoleString += r + ","
+	}
+	newRoleString = strings.Trim(newRoleString, ",")
+	newUserString := fmt.Sprintf("%s:%s,%s", newUser.Username, newUser.Password, newRoleString)
+
+	conts, err := ioutil.ReadFile(pf.path)
 	if err != nil {
 		return err
 	}
 
-	var currUser user
-	for _, currUser = range users {
-		if currUser.Username == oldUsername {
+	for _, line := range bytes.Split(conts, []byte("\n")) {
+		line = bytes.TrimSpace(line)
+		if bytes.HasPrefix(line, []byte(oldUsername)) {
+			conts = bytes.Replace(conts, line, []byte(newUserString), -1)
 			break
 		}
 	}
-	fmt.Println(currUser)
+
+	err = ioutil.WriteFile(pf.path, conts, 0)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -61,11 +74,13 @@ func parseProps(conts []byte) []user {
 			var u user
 			columns := bytes.Split(record, []byte(":"))
 			roles := []string{}
-			for _, role := range bytes.Split(columns[1], []byte(","))[1:] {
+			userProps := bytes.Split(columns[1], []byte(","))
+			for _, role := range userProps[1:] {
 				roles = append(roles, string(role))
 			}
 			u.Username = string(columns[0])
 			u.Roles = roles
+			u.Password = string(userProps[0])
 			users = append(users, u)
 		}
 	}

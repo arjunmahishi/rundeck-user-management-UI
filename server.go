@@ -44,12 +44,11 @@ func updateUsers(c echo.Context) error {
 
 	var bodyJSON struct {
 		OldUsername string
-		NewUsername string
-		Roles       []string
+		NewUser     user
 	}
 	json.Unmarshal(raw, &bodyJSON)
 
-	err = um.UpdateUser(bodyJSON.OldUsername, bodyJSON.NewUsername, bodyJSON.Roles)
+	err = um.UpdateUser(bodyJSON.OldUsername, bodyJSON.NewUser)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
