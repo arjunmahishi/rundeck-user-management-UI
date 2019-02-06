@@ -1,5 +1,6 @@
 const baseURL = "http://localhost:3000/users"
 const table = document.querySelector("#user-table")
+var usersList;
 
 const makeRequest = (type, data, callback) => {
     var xhr = new XMLHttpRequest();
@@ -17,11 +18,13 @@ const makeRequest = (type, data, callback) => {
 
 const getUsers = (callback) => {
     makeRequest("GET", null, (res) => {
-       callback(JSON.parse(res)) 
+        usersList = JSON.parse(res)
+        callback(usersList) 
     })
 }
 
 const loadUserTable = (users) => {
+    table.innerHTML = ""
     table.innerHTML += users.map((user, i) => {
         var roles = ""
         user.roles.map((role) => {
@@ -40,6 +43,10 @@ const loadUserTable = (users) => {
             </tr>
         `
     })
+}
+
+const searchHandler = (query) => {
+    loadUserTable(usersList.filter(user => user.username.includes(query)))
 }
 
 window.onload = () => {
