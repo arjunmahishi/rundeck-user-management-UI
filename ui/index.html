@@ -1,6 +1,41 @@
 <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+        <link rel="shortcut icon" href="favicon.ico"/>
+    </head>
+
+    <style>
+        .custom-badge{
+            font-size: 100%;
+            margin: 2px;
+        }
+    </style>
+
     <body>
-        <input placeholder="username" type="email" />
-        <input placeholder="role" type="text" />
+        <div class="container" style="padding-top: 1em">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr class="">
+                        <th class="">#</th>
+                        <th class="">Username</th>
+                        <th class="">Roles</th>
+                        <th class="">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="user-table" class=""></tbody>
+                <tbody class="">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><button class="btn btn-outline-success">Add</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>
+
+<script src="main.js"></script>
