@@ -10,7 +10,7 @@ import (
 type user struct {
 	Username string   `json:"username"`
 	Roles    []string `json:"roles"`
-	Password string
+	Password string   `json:"password"`
 }
 
 // UserManager interface to handle user related tasks
