@@ -8,6 +8,9 @@
     </head>
 
     <style>
+        body{
+            background-color: #f4f3ef
+        }
         .custom-badge{
             font-size: 100%;
             margin: 2px;
@@ -25,16 +28,32 @@
             height: 100%;
             padding: 1em;
             border-radius: 6px;
-            background-color: #f4f3ef
+        }
+        .bg-dark {
+            background-color: #212529!important;
+        }
+        nav  a {
+            color: #fff
+        }
+        nav a:hover {
+            color: #fff;
+            text-decoration: unset;
         }
     </style>
 
     <body>
+        <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/favicon.ico" width="30" height="30" class="d-inline-block align-top" alt="">
+            Rundeck user management
+        </a>
+        <a class="justify-content-end" href="/logout" >Logout</a>
+        </nav>
         <div class="table-container">
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Search" oninput="searchHandler(this.value)">
             </div>
-            <table class="table">
+            <table class="table table-bordered">
                 <thead class="thead-dark">
                     <tr class="">
                         <th class="">#</th>
