@@ -15,16 +15,17 @@ var um = NewUserManager()
 func main() {
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "${time_rfc3339} method=${method} uri=${uri} status=${status}\n",
+	}))
 
 	e.Static("/", "ui")
-
 	e.GET("/users", getUsers)
 	e.POST("/users", createUser)
 	e.PUT("/users", updateUsers)
 	e.DELETE("/users", deleteUser)
 
-	e.Logger.Fatal(e.Start(":3000"))
+	e.Logger.Fatal(e.Start(":4180"))
 }
 
 func getUsers(c echo.Context) error {

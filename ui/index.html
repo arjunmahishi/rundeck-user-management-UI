@@ -8,15 +8,32 @@
     </head>
 
     <style>
+        body{
+            background-color: #f4f3ef
+        }
         .custom-badge{
             font-size: 100%;
             margin: 2px;
+            border-radius: 20px;
+        }
+        .custom-button{
+            border-radius: 20px;
+            border-width: 2px;
+            margin: 4px;
+        }
+        td{
+            vertical-align: middle !important;
+        }
+        .table-container{
+            margin-top: 1em;
+            padding-top: 1em;
+            border-radius: 6px;
+            background-color: #fff;
         }
     </style>
 
     <body>
-
-        <div class="container" style="padding-top: 1em">
+        <div class="container table-container">
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Search" oninput="searchHandler(this.value)">
             </div>
@@ -30,11 +47,11 @@
                     </tr>
                 </thead>
 
-                <tbody id="user-table" class=""></tbody>
+                <tbody id="user-table"></tbody>
                 <tbody>
                     <tr>
                         <td></td><td></td><td></td>
-                        <td><button class="btn btn-outline-success" 
+                        <td><button class="btn btn-outline-success custom-button" 
                             data-toggle="modal" data-target="#user-data">Add</button></td>
                     </tr>
                 </tbody>
@@ -80,6 +97,4 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-<script src="/main.js"></script>
-
-
+<script id="main-script" src="main.js"></script>

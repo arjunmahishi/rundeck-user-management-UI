@@ -2,7 +2,7 @@ window.onload = () => {
     getUsers(users => loadUserTable(users))
 }
 
-const baseURL = "http://localhost:3000/users"
+const baseURL = "/users"
 const table = document.querySelector("#user-table")
 var usersList;
 
@@ -43,21 +43,21 @@ const deleteUser = (username) => {
 
 const loadUserTable = (users) => {
     table.innerHTML = ""
-    table.innerHTML += users.map((user, i) => {
+    users.map((user, i) => {
         var roles = ""
         user.roles.map((role) => {
-            roles += `<span class="custom-badge badge badge-dark">${role}</span>`                
+            roles += `<span class="custom-badge badge badge-secondary">${role}</span>`                
         })
 
-        return `
+        table.innerHTML += `
             <tr class="">
                 <td class="">${i+1}</td>
                 <td class="">${user.username}</td>
                 <td class="">${roles}</td>
                 <td>
-                    <button class="btn btn-outline-secondary" data-user="${i}"
+                    <button class="btn btn-outline-dark custom-button" data-user="${i}"
                     data-toggle="modal" data-target="#user-data">Edit</button>
-                    <button class="btn btn-outline-danger" onclick="deleteUser('${user.username}')">Delete</button>
+                    <button class="btn btn-outline-danger custom-button" onclick="deleteUser('${user.username}')">Delete</button>
                 </td>
             </tr>
         `
