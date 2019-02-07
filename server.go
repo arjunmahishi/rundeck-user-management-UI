@@ -19,11 +19,17 @@ func main() {
 		Format: "${time_rfc3339} method=${method} uri=${uri} status=${status}\n",
 	}))
 
+	e.Use(middleware.BasicAuth(validateUser))
+
 	e.Static("/", "ui")
 	e.GET("/users", getUsers)
 	e.POST("/users", createUser)
 	e.PUT("/users", updateUsers)
 	e.DELETE("/users", deleteUser)
+
+	e.GET("/logout", func(c echo.Context) error {
+		return c.String(http.StatusUnauthorized, "Logged out")
+	})
 
 	e.Logger.Fatal(e.Start(":4180"))
 }
@@ -37,6 +43,10 @@ func getUsers(c echo.Context) error {
 }
 
 func createUser(c echo.Context) error {
+	if !validateAccess(c, "admin") {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Unauthorised"})
+	}
+
 	body := c.Request().Body
 	defer body.Close()
 
@@ -69,6 +79,10 @@ func updateUsers(c echo.Context) error {
 	}
 	json.Unmarshal(raw, &bodyJSON)
 
+	if getCurrUser(c).Username != bodyJSON.OldUsername {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Unauthorised"})
+	}
+
 	err = um.UpdateUser(bodyJSON.OldUsername, bodyJSON.NewUser)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
@@ -77,6 +91,10 @@ func updateUsers(c echo.Context) error {
 }
 
 func deleteUser(c echo.Context) error {
+	if !validateAccess(c, "admin") {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Unauthorised"})
+	}
+
 	body := c.Request().Body
 	defer body.Close()
 
