@@ -42,6 +42,8 @@ func getUsers(c echo.Context) error {
 			temp := users[0]
 			users[0] = users[i]
 			users[i] = temp
+		} else {
+			users[i].Password = ""
 		}
 	}
 
