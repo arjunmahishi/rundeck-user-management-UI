@@ -110,9 +110,14 @@ $('#user-data').on('show.bs.modal', function (event) {
 
     if (i !== undefined) {
         var user = data.users[i]
+        var currUser = data.users[0]
         document.querySelector("#modal-username").value = user.username
         document.querySelector("#modal-roles").value = user.roles
-        document.querySelector("#modal-password").value = user.password
+        if (currUser.username === user.username || currUser.roles.includes("admin")){
+            document.querySelector("#modal-password").value = user.password
+        }else{
+            document.querySelector("#modal-password").disabled = true
+        }
         document.querySelector("#modal-submit").setAttribute("onclick", `handleUpdateSubmit("${user.username}")`)
     }else {
         document.querySelector("#modal-username").value = ""
