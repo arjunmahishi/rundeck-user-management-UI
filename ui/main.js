@@ -1,5 +1,5 @@
 window.onload = () => {
-    getUsers(data => loadUserTable(data.users, data.allowence))
+    getUsers(data => loadUserTable(data.users, data.allowance))
 }
 
 const baseURL = "/users"
@@ -31,21 +31,21 @@ const getUsers = (callback) => {
 
 const updateUser = (oldUsername, newUser) => {
     var data = {oldUsername: oldUsername, newUser: newUser}
-    makeRequest("PUT", JSON.stringify(data), res => getUsers(newData => loadUserTable(newData.users, newData.allowence)))
+    makeRequest("PUT", JSON.stringify(data), res => getUsers(newData => loadUserTable(newData.users, newData.allowance)))
 }
 
 const createUser = (newUser) => makeRequest("POST", JSON.stringify(newUser), res => 
-getUsers(newData => loadUserTable(newData.users, newData.allowence)))
+getUsers(newData => loadUserTable(newData.users, newData.allowance)))
 
 const deleteUser = (username) => {
     var data = {username: username}
     if (confirm("Are you sure you want to delete this user from rundeck? this cannot be undone")){
-        makeRequest("DELETE", JSON.stringify(data), res => getUsers(newData => loadUserTable(newData.users, newData.allowence)))
+        makeRequest("DELETE", JSON.stringify(data), res => getUsers(newData => loadUserTable(newData.users, newData.allowance)))
     }
 }
 
-const loadUserTable = (users, allowence) => {
-    // allowence: 0 - add, 1 - edit, 2 - delete
+const loadUserTable = (users, allowance) => {
+    // allowance: 0 - add, 1 - edit, 2 - delete
     table.innerHTML = ""
     users.map((user, i) => {
         var roles = ""
@@ -60,8 +60,8 @@ const loadUserTable = (users, allowence) => {
                 <td class="">${roles}</td>
                 <td>
                     <button class="btn btn-outline-dark custom-button" data-user="${i}"
-                    data-toggle="modal"` + ((allowence[1] || i===0) ? "":" disabled ") + `data-target="#user-data">Edit</button>
-                    <button class="btn btn-outline-danger custom-button"` + (allowence[2] ? "":" disabled ") + ` 
+                    data-toggle="modal"` + ((allowance[1] || i===0) ? "":" disabled ") + `data-target="#user-data">Edit</button>
+                    <button class="btn btn-outline-danger custom-button"` + (allowance[2] ? "":" disabled ") + ` 
                     onclick="deleteUser('${user.username}')">Delete</button>
                 </td>
             </tr>
@@ -71,13 +71,13 @@ const loadUserTable = (users, allowence) => {
         <tr>
             <td></td><td></td><td></td>
             <td><button class="btn btn-outline-success custom-button" 
-            data-toggle="modal" data-target="#user-data"` + (allowence[0] ? "":" disabled ") + `>Add</button></td>
+            data-toggle="modal" data-target="#user-data"` + (allowance[0] ? "":" disabled ") + `>Add</button></td>
         </tr>
     `
 }
 
 const searchHandler = (query) => {
-    loadUserTable(data.users.filter(user => user.username.includes(query.toLowerCase())), data.allowence)
+    loadUserTable(data.users.filter(user => user.username.includes(query.toLowerCase())), data.allowance)
 }
 
 const togglePassword = (checked) => {

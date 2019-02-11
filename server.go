@@ -48,7 +48,7 @@ func getUsers(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{"users": users, "allowence": []bool{true, false, true}})
+	return c.JSON(http.StatusOK, map[string]interface{}{"users": users, "allowance": createAllowance(c)})
 }
 
 func createUser(c echo.Context) error {
