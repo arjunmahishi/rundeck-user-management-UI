@@ -11,6 +11,10 @@ body{
     border-width: 2px;
     margin: 4px;
 }
+.custom-button:disabled{
+    color: #ccc;
+    border-color: #ccc
+}
 td{
     vertical-align: middle !important;
 }

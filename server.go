@@ -36,10 +36,19 @@ func main() {
 
 func getUsers(c echo.Context) error {
 	users, err := um.GetUsers()
+	currUser := getCurrUser(c)
+	for i, u := range users {
+		if u.Username == currUser.Username {
+			temp := users[0]
+			users[0] = users[i]
+			users[i] = temp
+		}
+	}
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, map[string]interface{}{"users": users, "allowence": []bool{true, false, true}})
 }
 
 func createUser(c echo.Context) error {
@@ -79,7 +88,7 @@ func updateUsers(c echo.Context) error {
 	}
 	json.Unmarshal(raw, &bodyJSON)
 
-	if getCurrUser(c).Username != bodyJSON.OldUsername {
+	if !validateAccess(c, "admin") && getCurrUser(c).Username != bodyJSON.OldUsername {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Unauthorised"})
 	}
 

@@ -1,10 +1,10 @@
 window.onload = () => {
-    getUsers(users => loadUserTable(users))
+    getUsers(data => loadUserTable(data.users, data.allowence))
 }
 
 const baseURL = "/users"
 const table = document.querySelector("#user-table")
-var usersList;
+var data;
 
 const makeRequest = (type, data, callback) => {
     var xhr = new XMLHttpRequest();
@@ -18,30 +18,34 @@ const makeRequest = (type, data, callback) => {
 
     xhr.open(type, baseURL);
     xhr.send(data);
+    console.log(xhr)
 }
 
 const getUsers = (callback) => {
     makeRequest("GET", null, (res) => {
-        usersList = JSON.parse(res)
-        callback(usersList) 
+        data = JSON.parse(res)
+        console.log(data)
+        callback(data) 
     })
 }
 
 const updateUser = (oldUsername, newUser) => {
     var data = {oldUsername: oldUsername, newUser: newUser}
-    makeRequest("PUT", JSON.stringify(data), res => getUsers(newList => loadUserTable(newList)))
+    makeRequest("PUT", JSON.stringify(data), res => getUsers(newData => loadUserTable(newData.users, newData.allowence)))
 }
 
-const createUser = (newUser) => makeRequest("POST", JSON.stringify(newUser), res => getUsers(newList => loadUserTable(newList)))
+const createUser = (newUser) => makeRequest("POST", JSON.stringify(newUser), res => 
+getUsers(newData => loadUserTable(newData.users, newData.allowence)))
 
 const deleteUser = (username) => {
     var data = {username: username}
     if (confirm("Are you sure you want to delete this user from rundeck? this cannot be undone")){
-        makeRequest("DELETE", JSON.stringify(data), res => getUsers(newList => loadUserTable(newList)))
+        makeRequest("DELETE", JSON.stringify(data), res => getUsers(newData => loadUserTable(newData.users, newData.allowence)))
     }
 }
 
-const loadUserTable = (users) => {
+const loadUserTable = (users, allowence) => {
+    // allowence: 0 - add, 1 - edit, 2 - delete
     table.innerHTML = ""
     users.map((user, i) => {
         var roles = ""
@@ -56,16 +60,24 @@ const loadUserTable = (users) => {
                 <td class="">${roles}</td>
                 <td>
                     <button class="btn btn-outline-dark custom-button" data-user="${i}"
-                    data-toggle="modal" data-target="#user-data">Edit</button>
-                    <button class="btn btn-outline-danger custom-button" onclick="deleteUser('${user.username}')">Delete</button>
+                    data-toggle="modal"` + ((allowence[1] || i===0) ? "":" disabled ") + `data-target="#user-data">Edit</button>
+                    <button class="btn btn-outline-danger custom-button"` + (allowence[2] ? "":" disabled ") + ` 
+                    onclick="deleteUser('${user.username}')">Delete</button>
                 </td>
             </tr>
         `
     })
+    table.innerHTML += `
+        <tr>
+            <td></td><td></td><td></td>
+            <td><button class="btn btn-outline-success custom-button" 
+            data-toggle="modal" data-target="#user-data"` + (allowence[0] ? "":" disabled ") + `>Add</button></td>
+        </tr>
+    `
 }
 
 const searchHandler = (query) => {
-    loadUserTable(usersList.filter(user => user.username.includes(query.toLowerCase())))
+    loadUserTable(data.users.filter(user => user.username.includes(query.toLowerCase())), data.allowence)
 }
 
 const togglePassword = (checked) => {
@@ -97,7 +109,7 @@ $('#user-data').on('show.bs.modal', function (event) {
     var i = button.data('user')
 
     if (i !== undefined) {
-        var user = usersList[i]
+        var user = data.users[i]
         document.querySelector("#modal-username").value = user.username
         document.querySelector("#modal-roles").value = user.roles
         document.querySelector("#modal-password").value = user.password
