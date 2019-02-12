@@ -141,3 +141,17 @@ func parseProps(conts []byte) []user {
 	}
 	return users
 }
+
+func searchUser(username string) (*user, error) {
+	users, err := um.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, u := range users {
+		if u.Username == username {
+			return &u, nil
+		}
+	}
+	return nil, fmt.Errorf("%s is not a rundeck user", username)
+}

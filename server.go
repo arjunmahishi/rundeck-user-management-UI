@@ -94,6 +94,14 @@ func updateUsers(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Unauthorised"})
 	}
 
+	if !validateAccess(c, "admin") {
+		user, err := searchUser(bodyJSON.OldUsername)
+		if err != nil {
+			c.JSON(http.StatusOK, map[string]string{"Error": "User not found"})
+		}
+		bodyJSON.NewUser.Roles = user.Roles
+	}
+
 	err = um.UpdateUser(bodyJSON.OldUsername, bodyJSON.NewUser)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
