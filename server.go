@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/middleware"
@@ -10,9 +12,18 @@ import (
 	"github.com/labstack/echo"
 )
 
-var um = NewUserManager()
+var um UserManager
+var err error
 
 func main() {
+	propFilePath := flag.String("realm-path", "/etc/rundeck/realm.properties", "enter a valid realm.properties file path")
+	flag.Parse()
+
+	um, err = NewUserManager(*propFilePath)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	e := echo.New()
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
@@ -36,6 +47,10 @@ func main() {
 
 func getUsers(c echo.Context) error {
 	users, err := um.GetUsers()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
 	currUser := getCurrUser(c)
 	for i, u := range users {
 		if u.Username == currUser.Username {
@@ -45,10 +60,6 @@ func getUsers(c echo.Context) error {
 		} else if !validateAccess(c, "admin") {
 			users[i].Password = ""
 		}
-	}
-
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{"users": users, "allowance": createAllowance(c)})
 }

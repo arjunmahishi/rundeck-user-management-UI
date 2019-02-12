@@ -22,8 +22,12 @@ type UserManager interface {
 }
 
 // NewUserManager is a constructor for UserManager
-func NewUserManager() UserManager {
-	return &propsFile{path: "/etc/rundeck/realm.properties"}
+func NewUserManager(propFilePath string) (UserManager, error) {
+	err := validatePropFile(propFilePath)
+	if err != nil {
+		return nil, err
+	}
+	return &propsFile{path: propFilePath}, nil
 }
 
 type propsFile struct {
@@ -154,4 +158,18 @@ func searchUser(username string) (*user, error) {
 		}
 	}
 	return nil, fmt.Errorf("%s is not a rundeck user", username)
+}
+
+func validatePropFile(path string) error {
+	conts, err := ioutil.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	users := parseProps(conts)
+	if len(users) < 1 {
+		return fmt.Errorf("no users found at %s. Make sure it is the right path", path)
+	}
+
+	return nil
 }
