@@ -24,7 +24,7 @@ const makeRequest = (type, data, callback) => {
 const getUsers = (callback) => {
     makeRequest("GET", null, (res) => {
         data = JSON.parse(res)
-        console.log(data)
+        document.querySelector("#nav-username").innerHTML = `Hi, ${data.users[0].username}`
         callback(data) 
     })
 }
