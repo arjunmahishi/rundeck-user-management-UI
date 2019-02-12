@@ -28,7 +28,7 @@ func main() {
 	e.DELETE("/users", deleteUser)
 
 	e.GET("/logout", func(c echo.Context) error {
-		return c.String(http.StatusUnauthorized, "Logged out")
+		return c.HTML(http.StatusUnauthorized, "<script>window.history.go(-1)</script>")
 	})
 
 	e.Logger.Fatal(e.Start(":4180"))
