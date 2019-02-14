@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,7 +17,8 @@ var um UserManager
 var err error
 
 func main() {
-	propFilePath := flag.String("realm-path", "/etc/rundeck/realm.properties", "enter a valid realm.properties file path")
+	propFilePath := flag.String("path", "/etc/rundeck/realm.properties", "path of rundeck's realm.properties file")
+	port := flag.Int("port", 8000, "port number to host on")
 	flag.Parse()
 
 	um, err = NewUserManager(*propFilePath)
@@ -26,10 +28,10 @@ func main() {
 
 	e := echo.New()
 
+	e.HideBanner = true
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "${time_rfc3339} method=${method} uri=${uri} status=${status}\n",
 	}))
-
 	e.Use(middleware.BasicAuth(validateUser))
 
 	e.Static("/", "ui")
@@ -42,7 +44,7 @@ func main() {
 		return c.HTML(http.StatusUnauthorized, "<script>window.history.go(-1)</script>")
 	})
 
-	e.Logger.Fatal(e.Start(":4180"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", *port)))
 }
 
 func getUsers(c echo.Context) error {
