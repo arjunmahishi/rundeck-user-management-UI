@@ -49,7 +49,7 @@ const loadUserTable = (users, allowance) => {
     table.innerHTML = ""
     users.map((user, i) => {
         var roles = ""
-        user.roles.map((role) => {
+        user.roles.sort().map((role) => {
             roles += `<span class="custom-badge badge badge-secondary">${role}</span>`                
         })
 
@@ -108,7 +108,7 @@ $('#user-data').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var i = button.data('user')
 
-    if (i !== undefined) {
+    if (i !== undefined) { // Edit 
         var user = data.users[i]
         var currUser = data.users[0]
         
@@ -125,7 +125,7 @@ $('#user-data').on('show.bs.modal', function (event) {
         document.querySelector("#modal-roles").value = user.roles
         document.querySelector("#modal-username").value = user.username
         document.querySelector("#modal-submit").setAttribute("onclick", `handleUpdateSubmit("${user.username}")`)
-    }else {
+    }else { // Add
         document.querySelector("#modal-username").value = ""
         document.querySelector("#modal-roles").value = "" 
         document.querySelector("#modal-password").value = ""
