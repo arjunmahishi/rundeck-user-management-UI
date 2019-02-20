@@ -122,7 +122,8 @@ $('#user-data').on('show.bs.modal', function (event) {
             document.querySelector("#modal-password").disabled = true
         }
 
-        document.querySelector("#modal-roles").value = user.roles
+        rolesManager.init(user.roles)
+
         document.querySelector("#modal-username").value = user.username
         document.querySelector("#modal-submit").setAttribute("onclick", `handleUpdateSubmit("${user.username}")`)
     }else { // Add
@@ -131,4 +132,24 @@ $('#user-data').on('show.bs.modal', function (event) {
         document.querySelector("#modal-password").value = ""
         document.querySelector("#modal-submit").setAttribute("onclick", "handleCreateSubmit()")
     }
+})
+
+let rolesManager = new Roles((roles, availRoles) => {
+    let rolesElement = document.querySelector("#modal-roles-div")
+    let rolesSelector = document.querySelector("#role-selector")
+
+    rolesElement.innerHTML = ""
+    roles.map(r => {
+        rolesElement.innerHTML += `
+            <span class="custom-badge badge badge-secondary">
+                ${r} <button class="role-remove-btn" onclick="rolesManager.removeRole('${r}')">x</button>
+            </span>
+        `
+    })
+    
+    rolesSelector.innerHTML = ""
+    availRoles.map(r => {
+        rolesSelector.innerHTML += `<a class="dropdown-item" href="#" onclick="rolesManager.addRole('${r}')">${r}</a>`
+    })
+    document.querySelector("#modal-roles").value = roles
 })

@@ -1,7 +1,7 @@
 class Roles {
-    constructor(currRoles, renderFunction){
-        this.allRoles = ["role1", "role2", "role3", "role4"]
-        this.currRoles = currRoles
+    constructor(renderFunction){
+        this.allRoles = ["user", "voice-basic", "voice-adv", "api-basic", "api-adv"]
+        this.currRoles = []
         this.availRoles = []
         this.renderFunction = renderFunction || (() => {})
     }
@@ -9,7 +9,7 @@ class Roles {
     addRole(role) {
         this.currRoles = this.currRoles.concat(role)
         this.updateAvailRoles()
-        this.renderFunction(this.getRoles())
+        this.renderFunction(this.currRoles, this.availRoles)
     }
 
     removeRole(role) {
@@ -19,7 +19,7 @@ class Roles {
         }
 
         this.updateAvailRoles()
-        this.renderFunction(this.getRoles())
+        this.renderFunction(this.currRoles, this.availRoles)
     }
 
     updateAvailRoles() {
@@ -27,6 +27,12 @@ class Roles {
     }
 
     getRoles() {
-        return this.currRoles + ""
+        return this.currRoles
+    }
+
+    init(currRoles) {
+        this.currRoles = currRoles
+        this.updateAvailRoles()
+        this.renderFunction(currRoles, this.availRoles)
     }
 }

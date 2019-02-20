@@ -57,8 +57,19 @@
                 <input type="text" class="form-control" id="modal-username">
             </div>
             <div class="form-group">
-                <label class="col-form-label">Role (comma separated):</label>
-                <input type="text" class="form-control" id="modal-roles">
+                <label class="col-form-label">Role:</label>
+                <div id="modal-roles-div"></div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle role-selector" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Add role
+                    </button>
+                    <div id="role-selector" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+                <input type="text" class="form-control" id="modal-roles" hidden>
             </div>
             <div class="form-group">
                 <label class="col-form-label">Password:</label>
