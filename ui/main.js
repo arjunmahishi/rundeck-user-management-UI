@@ -129,6 +129,7 @@ $('#user-data').on('show.bs.modal', function (event) {
     }else { // Add
         document.querySelector("#modal-username").value = ""
         document.querySelector("#modal-roles").value = "" 
+        rolesManager.init(["user"])
         document.querySelector("#modal-password").value = ""
         document.querySelector("#modal-submit").setAttribute("onclick", "handleCreateSubmit()")
     }
